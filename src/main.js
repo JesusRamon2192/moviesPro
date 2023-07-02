@@ -67,8 +67,3 @@ async function getCategoriesPreview() {
         previewCategoriesContainer.appendChild(categoryContainer);
     });
 }
-getTrendingMoviesPreview();
-getCategoriesPreview();
-
-
-console.log('API_URL = https://lkjaslkdfns.com/asokjdlkjnf?' + API_KEY);
