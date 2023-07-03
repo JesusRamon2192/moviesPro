@@ -1,14 +1,8 @@
-searchFormBtn.addEventListener('click', ()=> {
-    location.hash='#search=';
-})
+searchFormBtn.addEventListener('click', ()=> location.hash='#search=');
 
-trendingBtn.addEventListener('click', ()=> {
-    location.hash='#trends=';
-})
+trendingBtn.addEventListener('click', ()=>   location.hash='#trends=');
 
-arrowBtn.addEventListener('click', ()=> {
-    location.hash='#home';
-})
+arrowBtn.addEventListener('click', ()=> location.hash='#home');
 
 window.addEventListener('DOMContentLoaded', navigator, false);
 window.addEventListener('hashchange', navigator, false);
@@ -16,17 +10,15 @@ window.addEventListener('hashchange', navigator, false);
 function navigator() {
     console.log({ location });
 
-    if(location.hash.startsWith('#trends')){
-        trendPage();
-    }  else if (location.hash.startsWith('#search=')) {
-        searchPage();
-    }  else if (location.hash.startsWith('#movieDetail=')) {
-        movieDetailPage()
-    }  else if (location.hash.startsWith('#category=')) {
-        categoriesPage();
-    }  else {
-        homePage();
-    }
+    location.hash.startsWith('#trends')
+    ? trendPage()       :
+    location.hash.startsWith('#search=')
+    ? searchPage()      :
+    location.hash.startsWith('#movieDetail=')
+    ? movieDetailPage() :
+    location.hash.startsWith('#category=') 
+    ? categoriesPage()  :
+    homePage();
 }
 
 const homePage = () => {
