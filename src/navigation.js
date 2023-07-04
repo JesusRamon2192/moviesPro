@@ -1,11 +1,9 @@
-searchFormBtn.addEventListener('click', ()=> location.hash='#search=');
-
+searchFormBtn.addEventListener('click', ()=> location.hash=`#search=${searchFormInput.value}`);
 
 trendingBtn.addEventListener('click', ()=>   location.hash='#trends=');
 
-
-arrowBtn.addEventListener('click', ()=> location.hash='#home');
-
+//arrowBtn.addEventListener('click', ()=> location.hash=window.history.back());
+arrowBtn.addEventListener('click', ()=> history.go(-1));
 
 window.addEventListener('DOMContentLoaded', navigator, false);
 window.addEventListener('hashchange', navigator, false);
@@ -20,7 +18,6 @@ function smoothscroll(){
 
 function navigator() {
     console.log({ location });
-
 
     location.hash.startsWith('#trends')
     ? trendPage()       :
@@ -39,7 +36,6 @@ function navigator() {
 const homePage = () => {
     console.log('Home');
 
-
     headerSection.classList.remove('header-container--long');
     headerSection.style.background = '';
     arrowBtn.classList.add('inactive');
@@ -54,11 +50,9 @@ const homePage = () => {
     genericSection.classList.add('inactive');
     movieDetailSection.classList.add('inactive');
 
-
     getMovies('trending/movie/day', trendingMoviesPreviewList);
     getCategoriesPreview();
 }
-
 
 const categoriesPage = () => {
     console.log('Categories');
@@ -72,30 +66,26 @@ const categoriesPage = () => {
     headerCategoryTitle.classList.remove('inactive');
     searchForm.classList.add('inactive');
 
-
     trendingPreviewSection.classList.add('inactive');
     categoriesPreviewSection.classList.add('inactive');
     genericSection.classList.remove('inactive');
     movieDetailSection.classList.add('inactive');
 
-
-    const [categoryUrl, categoryInfo] = location.hash.split('='); // ['#category', 'id-name']
+    // ['#category', 'id-name']
+    const [categoryUrl, categoryInfo] = location.hash.split('='); 
     const [idCat, nameCat] = categoryInfo.split('-');
-
 
     var encodedString = nameCat;
     var decodedString = decodeURIComponent(encodedString);
 
-
     headerCategoryTitle.innerHTML = decodedString;
 
     getMovies('discover/movie?with_genres=', genericSection, idCat);
+    headerCategoryTitle.style.marginTop =  "55px"
 }
-
 
 const movieDetailPage = () => {
     console.log('MovieDetail');
-
 
     headerSection.classList.add('header-container--long');
     //headerSection.style.background = '';
@@ -105,37 +95,36 @@ const movieDetailPage = () => {
     headerCategoryTitle.classList.add('inactive');
     searchForm.classList.add('inactive');
 
-
     trendingPreviewSection.classList.add('inactive');
     categoriesPreviewSection.classList.add('inactive');
     genericSection.classList.add('inactive');
     movieDetailSection.classList.remove('inactive');
 }
 
-
 const searchPage = () => {
     console.log('Search');
-
 
     headerSection.classList.remove('header-container--long');
     headerSection.style.background = '';
     arrowBtn.classList.remove('inactive');
     arrowBtn.classList.remove('header-arrow--white');
     headerTitle.classList.add('inactive');
-    headerCategoryTitle.classList.remove('inactive');
+    headerCategoryTitle.classList.add('inactive');
     searchForm.classList.remove('inactive');
-
 
     trendingPreviewSection.classList.add('inactive');
     categoriesPreviewSection.classList.add('inactive');
     genericSection.classList.remove('inactive');
     movieDetailSection.classList.add('inactive');
-}
 
+    // ['#search', 'userSearch']
+    const [searchHash, searchQuery] = location.hash.split('='); 
+    const decodedQuery = decodeURI(searchQuery);
+    getMovies('search/movie', genericSection, null, decodedQuery);
+}
 
 const trendPage = () => {
     console.log('Trends');
-
 
     headerSection.classList.remove('header-container--long');
     headerSection.style.background = '';
@@ -144,7 +133,6 @@ const trendPage = () => {
     headerTitle.classList.add('inactive');
     headerCategoryTitle.classList.remove('inactive');
     searchForm.classList.add('inactive');
-
 
     trendingPreviewSection.classList.add('inactive');
     categoriesPreviewSection.classList.add('inactive');

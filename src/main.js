@@ -13,10 +13,11 @@ const api = axios.create({
 
 const createFunction = (e) => document.createElement(e);
 
-async function getMovies(endpoint, section, id){
+async function getMovies(endpoint, section, id, searchQuery){
     const { data } = await api(endpoint, {
         params: {
-            with_genres: id
+            with_genres: id,
+            query: searchQuery
         }
     });
     const movies = data.results;
@@ -64,7 +65,6 @@ function createCategories(categories, container){
 
 async function getCategoriesPreview() {
     const { data } = await api('genre/movie/list');
-
 
     const categories = data.genres;
     console.log('Categories');
