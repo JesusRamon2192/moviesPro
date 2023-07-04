@@ -10,6 +10,13 @@ arrowBtn.addEventListener('click', ()=> location.hash='#home');
 window.addEventListener('DOMContentLoaded', navigator, false);
 window.addEventListener('hashchange', navigator, false);
 
+function smoothscroll(){
+    const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    if (currentScroll > 0) {
+         window.requestAnimationFrame(smoothscroll);
+         window.scrollTo (0,currentScroll - (currentScroll/5));
+    }
+};
 
 function navigator() {
     console.log({ location });
@@ -24,6 +31,8 @@ function navigator() {
     location.hash.startsWith('#category=') 
     ? categoriesPage()  :
     homePage();
+
+    smoothscroll();
 }
 
 
@@ -52,7 +61,6 @@ const homePage = () => {
 
 
 const categoriesPage = () => {
-    window.scrollTo(0,0);
     console.log('Categories');
 
 
@@ -80,7 +88,6 @@ const categoriesPage = () => {
 
 
     headerCategoryTitle.innerHTML = decodedString;
-
 
     getMovies('discover/movie?with_genres=', genericSection, idCat);
 }

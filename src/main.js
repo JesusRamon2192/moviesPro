@@ -9,9 +9,9 @@ const api = axios.create({
     }
 })
 
+// Utils
 
 const createFunction = (e) => document.createElement(e);
-
 
 async function getMovies(endpoint, section, id){
     const { data } = await api(endpoint, {
@@ -21,9 +21,7 @@ async function getMovies(endpoint, section, id){
     });
     const movies = data.results;
 
-
     section.innerHTML = "";
-
 
     movies.forEach(movie=> {
         const movieContainer = createFunction('div');
@@ -40,18 +38,8 @@ async function getMovies(endpoint, section, id){
     })
 }
 
-
-
-
-async function getCategoriesPreview() {
-    const { data } = await api('genre/movie/list');
-
-
-    const categories = data.genres;
-    console.log('Categories');
-    console.log( {data, categories});
-    
-    categoriesPreviewList.innerHTML = "";
+function createCategories(categories, container){
+    container.innerHTML = "";
     
     categories.forEach(category => {
         const categoryContainer = createFunction('div');
@@ -66,11 +54,23 @@ async function getCategoriesPreview() {
         });
         const categoryTitleText = document.createTextNode(category.name);
 
-
-
-
         categoryTitle.appendChild(categoryTitleText);
         categoryContainer.appendChild(categoryTitle);
-        categoriesPreviewList.appendChild(categoryContainer);
+        container.appendChild(categoryContainer);
     });
+}
+
+// Llamados a la API
+
+async function getCategoriesPreview() {
+    const { data } = await api('genre/movie/list');
+
+
+    const categories = data.genres;
+    console.log('Categories');
+    console.log( {data, categories});
+    
+    //categoriesPreviewList.innerHTML = "";
+    
+    createCategories(categories, categoriesPreviewList);
 }
