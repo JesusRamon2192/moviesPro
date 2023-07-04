@@ -9,24 +9,26 @@ const api = axios.create({
     }
 })
 
+
 const createFunction = (e) => document.createElement(e);
 
 
-async function getTrendingMoviesPreview() {
-    const res = await fetch('http://api.themoviedb.org/3/trending/movie/day?api_key=' + API_KEY);
-    const data = await res.json();
-
-
+async function getMovies(endpoint, section, id){
+    const { data } = await api(endpoint, {
+        params: {
+            with_genres: id
+        }
+    });
     const movies = data.results;
-    console.log('Movies');
-    console.log( {data, movies});
-    
-    //const trendingMoviesPreviewList = document.querySelector('#trendingPreview .trendingPreview-movieList');
-    
-    movies.forEach(movie => {
 
+
+    section.innerHTML = "";
+
+
+    movies.forEach(movie=> {
         const movieContainer = createFunction('div');
         movieContainer.classList.add('movie-container');
+
 
         const movieImg = createFunction('img');
         movieImg.classList.add('movie-img');
@@ -34,28 +36,37 @@ async function getTrendingMoviesPreview() {
         movieImg.setAttribute('src', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
         
         movieContainer.appendChild(movieImg);
-        trendingMoviesPreviewList.appendChild(movieContainer);
-    });
+        section.appendChild(movieContainer);
+    })
 }
+
+
 
 
 async function getCategoriesPreview() {
     const { data } = await api('genre/movie/list');
 
+
     const categories = data.genres;
     console.log('Categories');
     console.log( {data, categories});
     
-    //const categoriesPreviewList = document.querySelector('#categoriesPreview .categoriesPreview-list');
+    categoriesPreviewList.innerHTML = "";
     
     categories.forEach(category => {
         const categoryContainer = createFunction('div');
         categoryContainer.classList.add('category-container'); 
 
+
         const categoryTitle = createFunction('h3');
         categoryTitle.classList.add('category-title');
         categoryTitle.setAttribute('id', 'id' +category.id);
+        categoryTitle.addEventListener('click', ()=> {
+            location.hash = `#category=${category.id}-${category.name}`; 
+        });
         const categoryTitleText = document.createTextNode(category.name);
+
+
 
 
         categoryTitle.appendChild(categoryTitleText);

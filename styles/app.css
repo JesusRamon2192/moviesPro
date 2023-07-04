@@ -441,6 +441,21 @@ footer {
       min-height: 234px;
       max-height: 234px;
     }
+
+    #genericList {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-gap: 20px;
+    }
+
+    #genericList .movie-container .movie-img {
+      width: 156px;
+      min-width: 156px;
+      max-width: 156px;
+      height: 234px;
+      min-height: 234px;
+      max-height: 234px;
+    }
   }
   
   /* footer {
