@@ -49,7 +49,6 @@ h1, h2 {
   color: var(--purple-dark-2);
   font-family: var(--font-family-titles);
   font-weight: var(--font-weight-title1);
-  
   padding: 0;
 }
 
@@ -120,7 +119,8 @@ button {
 
 /* Header */
 .header-container {
-  padding-top: 40px;
+  padding: 40px;
+  position: relative;
 }
 
 .header-container--long {
@@ -139,6 +139,11 @@ button {
 
 .header-title {
   margin-bottom: 16px;
+  cursor: pointer;
+  position: absolute;
+  left: 50%;
+  top: 25%;
+  transform: translate(-50%, -50%);
 }
 
 .header-arrow {

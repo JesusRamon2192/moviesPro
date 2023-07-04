@@ -1,3 +1,5 @@
+headerTitle.addEventListener('click',  () => location.hash='#home');
+
 searchFormBtn.addEventListener('click', ()=> location.hash=`#search=${searchFormInput.value}`);
 
 trendingBtn.addEventListener('click', ()=>   location.hash='#trends=');
@@ -62,7 +64,7 @@ const categoriesPage = () => {
     headerSection.style.background = '';
     arrowBtn.classList.remove('inactive');
     arrowBtn.classList.remove('header-arrow--white');
-    headerTitle.classList.add('inactive');
+    headerTitle.classList.remove('inactive');
     headerCategoryTitle.classList.remove('inactive');
     searchForm.classList.add('inactive');
 
