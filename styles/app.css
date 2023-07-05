@@ -160,6 +160,7 @@ button {
   z-index: 1;
   font-size: 30px;
   justify-content: center;
+  cursor: pointer;
 }
 .header-arrow--white {
   color: var(--purple-light-1);
