@@ -539,8 +539,5 @@ footer {
     max-height: 225px;
   }
 
-  .header-container--long {
-    background-size: 100% 125%;
-    height: 100vh;
-  }
+
   }
