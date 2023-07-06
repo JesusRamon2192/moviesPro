@@ -76,9 +76,10 @@ async function getCategoriesPreview() {
 }
 
 async function getMovieById(id) {
+    genericSection.innerHTML ="";
     const { data: movie } = await api('/movie/' + id);
     console.log("MovieDetail",movie);
-
+    
     const movieUrl = 'https://image.tmdb.org/t/p/w500' + movie.poster_path;
     console.log("MovieUrl", movieUrl);
     headerSection.style.background = `
@@ -94,4 +95,30 @@ async function getMovieById(id) {
     movieDetailScore.textContent = movie.vote_average;
 
     createCategories(movie.genres, movieDetailCategoriesList);
+    getRelatedMoviesId(id);
+}
+
+async function getRelatedMoviesId(id) {
+    const { data } = await api(`movie/${id}/similar`);
+    console.log("RelatedMovies",data);
+
+
+    relatedMoviesCategoriesList.innerHTML = "";
+    data.results.forEach(movie=> {
+        const movieContainer = createFunction('div');
+        movieContainer.classList.add('movie-container');
+        movieContainer.addEventListener('click', () => {
+            location.hash = `#movie=${movie.id}`;
+        })
+
+
+        const movieImg = createFunction('img');
+        movieImg.classList.add('movie-img');
+        movieImg.setAttribute('alt', movie.title);
+        movieImg.setAttribute('src', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+        
+        movieContainer.appendChild(movieImg);
+        relatedMoviesCategoriesList.appendChild(movieContainer);
+        relatedMoviesCategoriesList.scrollTo(0,0);
+    })
 }
