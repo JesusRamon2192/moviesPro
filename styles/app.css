@@ -329,6 +329,7 @@ button {
   z-index: 1;
   position: absolute;
   background-color: var(--purple-light-1);
+  width: 100%;
 }
 
 .movieDetail-title {
