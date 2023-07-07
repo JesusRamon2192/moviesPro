@@ -11,6 +11,18 @@ const api = axios.create({
 
 // Utils
 
+function createObserver() {
+    return new IntersectionObserver((elements)=> {
+        elements.forEach(element => {
+            if (element.isIntersecting) {
+                element.target.setAttribute('src', element.target.dataset.img)
+            }
+        })
+    })
+}
+
+let observer = createObserver();
+
 const createFunction = (e) => document.createElement(e);
 
 async function getMovies(endpoint, section, id, searchQuery){
@@ -33,10 +45,11 @@ async function getMovies(endpoint, section, id, searchQuery){
         const movieImg = createFunction('img');
         movieImg.classList.add('movie-img');
         movieImg.setAttribute('alt', movie.title);
-        movieImg.setAttribute('src', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+        movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
         
         movieContainer.appendChild(movieImg);
         section.appendChild(movieContainer);
+        observer.observe(movieImg)
     })
 }
 
