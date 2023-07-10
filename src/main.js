@@ -52,12 +52,13 @@ async function getMovies(endpoint, section, id, searchQuery){
         movieContainer.appendChild(movieImg);
         section.appendChild(movieContainer);
         lazyLoader.observe(movieImg);
-    })
-    bntLoadMore.innerHTML = 'Cargar mas';
+    });
+
+    /* bntLoadMore.innerHTML = 'Cargar mas';
     bntLoadMore.addEventListener('click', ()=> {
         getPaginatedMovies(endpoint, section);
     });
-    genericSection.appendChild(bntLoadMore);
+    genericSection.appendChild(bntLoadMore); */
 }
 
 function createCategories(categories, container){
@@ -83,42 +84,115 @@ function createCategories(categories, container){
 
 // Llamados a la API
 
-let pageVal = 1;
+async function getPaginatedTrendingMovies() {
+    var { scrollTop, clientHeight, scrollHeight} = document.documentElement;
 
-async function getPaginatedMovies(endpoint, section) {
-    pageVal++;
-    const { data } = await api(endpoint, {
-        params: {
-            page: pageVal
-        }
-    });
-    const movies = data.results;
+    var scrollBottomIs = (scrollTop + clientHeight) >= (scrollHeight - 15)
 
-    movies.forEach(movie=> {
-        const movieContainer = createFunction('div');
-        movieContainer.classList.add('movie-container');
-        movieContainer.addEventListener('click', () => {
-            location.hash = `#movie=${movie.id}`;
-        })
-
-        const movieImg = createFunction('img');
-        movieImg.classList.add('movie-img');
-        movieImg.setAttribute('alt', movie.title);
-        movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
-        movieImg.addEventListener('error', ()=> {
-            movieImg.setAttribute('src', `https://as01.epimg.net/meristation/imagenes/2021/04/26/reportajes/1619438192_264857_1619438392_sumario_normal.jpg`);
+    console.log(scrollBottomIs);
+    if (scrollBottomIs) {
+        pageVal++;
+        const { data } = await api('trending/movie/day', {
+            params: {
+                page: pageVal
+            }
         });
-        
-        movieContainer.appendChild(movieImg);
-        section.appendChild(movieContainer);
-        lazyLoader.observe(movieImg);
-    })
+        const movies = data.results;
+    
+        movies.forEach(movie=> {
+            const movieContainer = createFunction('div');
+            movieContainer.classList.add('movie-container');
+            movieContainer.addEventListener('click', () => {
+                location.hash = `#movie=${movie.id}`;
+            })
+    
+            const movieImg = createFunction('img');
+            movieImg.classList.add('movie-img');
+            movieImg.setAttribute('alt', movie.title);
+            movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+            movieImg.addEventListener('error', ()=> {
+                movieImg.setAttribute('src', `https://as01.epimg.net/meristation/imagenes/2021/04/26/reportajes/1619438192_264857_1619438392_sumario_normal.jpg`);
+            });
+            
+            movieContainer.appendChild(movieImg);
+            genericSection.appendChild(movieContainer);
+            lazyLoader.observe(movieImg);
+        })
+    }
+}
 
-    bntLoadMore.innerHTML = 'Cargar mas';
-    bntLoadMore.addEventListener('click', ()=> {
-        getPaginatedMovies(endpoint, section);
-    });
-    genericSection.appendChild(bntLoadMore);
+async function getPaginatedCategoriesMovies() {
+    var { scrollTop, clientHeight, scrollHeight} = document.documentElement;
+
+    var scrollBottomIs = (scrollTop + clientHeight) >= (scrollHeight - 15)
+
+    console.log(scrollBottomIs);
+    if (scrollBottomIs) {
+        pageVal++;
+        const { data } = await api('discover/movie', {
+            params: {
+                page: pageVal
+            }
+        });
+        const movies = data.results;
+    
+        movies.forEach(movie=> {
+            const movieContainer = createFunction('div');
+            movieContainer.classList.add('movie-container');
+            movieContainer.addEventListener('click', () => {
+                location.hash = `#movie=${movie.id}`;
+            })
+    
+            const movieImg = createFunction('img');
+            movieImg.classList.add('movie-img');
+            movieImg.setAttribute('alt', movie.title);
+            movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+            movieImg.addEventListener('error', ()=> {
+                movieImg.setAttribute('src', `https://as01.epimg.net/meristation/imagenes/2021/04/26/reportajes/1619438192_264857_1619438392_sumario_normal.jpg`);
+            });
+            
+            movieContainer.appendChild(movieImg);
+            genericSection.appendChild(movieContainer);
+            lazyLoader.observe(movieImg);
+        })
+    }
+}
+
+async function getPaginatedSearchingMovies() {
+    var { scrollTop, clientHeight, scrollHeight} = document.documentElement;
+
+    var scrollBottomIs = (scrollTop + clientHeight) >= (scrollHeight - 15)
+
+    console.log(scrollBottomIs);
+    if (scrollBottomIs) {
+        pageVal++;
+        const { data } = await api('search/movie', {
+            params: {
+                page: pageVal
+            }
+        });
+        const movies = data.results;
+    
+        movies.forEach(movie=> {
+            const movieContainer = createFunction('div');
+            movieContainer.classList.add('movie-container');
+            movieContainer.addEventListener('click', () => {
+                location.hash = `#movie=${movie.id}`;
+            })
+    
+            const movieImg = createFunction('img');
+            movieImg.classList.add('movie-img');
+            movieImg.setAttribute('alt', movie.title);
+            movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+            movieImg.addEventListener('error', ()=> {
+                movieImg.setAttribute('src', `https://as01.epimg.net/meristation/imagenes/2021/04/26/reportajes/1619438192_264857_1619438392_sumario_normal.jpg`);
+            });
+            
+            movieContainer.appendChild(movieImg);
+            genericSection.appendChild(movieContainer);
+            lazyLoader.observe(movieImg);
+        })
+    }
 }
 
 async function getCategoriesPreview() {

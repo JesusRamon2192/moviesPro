@@ -1,3 +1,6 @@
+let pageVal = 1;
+let infiniteScroll;
+
 searchForm.addEventListener('submit', (e) => e.preventDefault());
 
 headerTitle.addEventListener('click',  () => location.hash='#home');
@@ -10,6 +13,7 @@ arrowBtn.addEventListener('click', ()=> window.history.back());
 
 window.addEventListener('DOMContentLoaded', navigator, false);
 window.addEventListener('hashchange', navigator, false);
+window.addEventListener('scroll', infiniteScroll, false);
 
 function smoothscroll(){
     const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
@@ -22,6 +26,11 @@ function smoothscroll(){
 function navigator() {
     console.log({ location });
 
+    if(infiniteScroll) {
+        window.removeEventListener('scroll', infiniteScroll, { passive: false});
+        infiniteScroll = undefined;
+    }
+
     location.hash.startsWith('#trends')
     ? trendPage()       :
     location.hash.startsWith('#search=')
@@ -33,6 +42,10 @@ function navigator() {
     homePage();
 
     smoothscroll();
+
+    if (infiniteScroll) {
+        window.addEventListener('scroll', infiniteScroll, { passive: false });
+    }
 }
 
 const homePage = () => {
@@ -83,6 +96,7 @@ const categoriesPage = () => {
 
     getMovies('discover/movie', genericSection, idCat);
     headerCategoryTitle.style.marginTop =  "40px"
+    infiniteScroll = getPaginatedCategoriesMovies;
 }
 
 const movieDetailPage = () => {
@@ -126,6 +140,7 @@ const searchPage = () => {
     const [searchHash, searchQuery] = location.hash.split('='); 
     const decodedQuery = decodeURI(searchQuery);
     getMovies('search/movie', genericSection, null, decodedQuery);
+    infiniteScroll = getPaginatedSearchingMovies;
 }
 
 const trendPage = () => {
@@ -147,4 +162,5 @@ const trendPage = () => {
     movieDetailSection.classList.add('inactive');
 
     getMovies('trending/movie/day', genericSection, null, null);
+    infiniteScroll = getPaginatedTrendingMovies;
 }
