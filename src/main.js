@@ -38,19 +38,27 @@ async function getMovies(endpoint, section, id, searchQuery){
     movies.forEach(movie=> {
         const movieContainer = createFunction('div');
         movieContainer.classList.add('movie-container');
-        movieContainer.addEventListener('click', () => {
-            location.hash = `#movie=${movie.id}`;
-        })
 
         const movieImg = createFunction('img');
         movieImg.classList.add('movie-img');
         movieImg.setAttribute('alt', movie.title);
         movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+        movieImg.addEventListener('click', () => {
+            location.hash = `#movie=${movie.id}`;
+        })
         movieImg.addEventListener('error', ()=> {
             movieImg.setAttribute('src', `https://as01.epimg.net/meristation/imagenes/2021/04/26/reportajes/1619438192_264857_1619438392_sumario_normal.jpg`);
         });
         
+        const movieBtn = createFunction('button');
+        movieBtn.classList.add('movie-btn');
+        movieBtn.addEventListener('click', ()=> {
+            movieBtn.classList.toggle('movie-btn--liked');
+            //AGREGAR PELICULA A LOCAL STORAGE
+        })
+
         movieContainer.appendChild(movieImg);
+        movieContainer.appendChild(movieBtn);
         section.appendChild(movieContainer);
         lazyLoader.observe(movieImg);
     });
