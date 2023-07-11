@@ -1,3 +1,4 @@
+let maxPages;
 let pageVal = 1;
 let infiniteScroll;
 
@@ -96,7 +97,7 @@ const categoriesPage = () => {
 
     getMovies('discover/movie', genericSection, idCat);
     headerCategoryTitle.style.marginTop =  "40px"
-    infiniteScroll = getPaginatedCategoriesMovies;
+    infiniteScroll = getPaginatedCategoriesMovies('discover/movie', genericSection, idCat);
 }
 
 const movieDetailPage = () => {
@@ -140,7 +141,7 @@ const searchPage = () => {
     const [searchHash, searchQuery] = location.hash.split('='); 
     const decodedQuery = decodeURI(searchQuery);
     getMovies('search/movie', genericSection, null, decodedQuery);
-    infiniteScroll = getPaginatedSearchingMovies;
+    infiniteScroll = getPaginatedSearchingMovies('search/movie', genericSection, decodedQuery);
 }
 
 const trendPage = () => {

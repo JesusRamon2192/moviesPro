@@ -31,6 +31,7 @@ async function getMovies(endpoint, section, id, searchQuery){
             query: searchQuery
         }
     });
+    maxPages = data.total_pages;
     const movies = data.results;
     section.innerHTML = "";
 
@@ -53,12 +54,6 @@ async function getMovies(endpoint, section, id, searchQuery){
         section.appendChild(movieContainer);
         lazyLoader.observe(movieImg);
     });
-
-    /* bntLoadMore.innerHTML = 'Cargar mas';
-    bntLoadMore.addEventListener('click', ()=> {
-        getPaginatedMovies(endpoint, section);
-    });
-    genericSection.appendChild(bntLoadMore); */
 }
 
 function createCategories(categories, container){
@@ -87,16 +82,17 @@ function createCategories(categories, container){
 async function getPaginatedTrendingMovies() {
     var { scrollTop, clientHeight, scrollHeight} = document.documentElement;
 
-    var scrollBottomIs = (scrollTop + clientHeight) >= (scrollHeight - 15)
-
-    console.log(scrollBottomIs);
-    if (scrollBottomIs) {
+    var scrollBottomIs = (scrollTop + clientHeight) >= (scrollHeight - 15);
+    
+    const pageIsNotMax = pageVal < maxPages;
+    if (scrollBottomIs && pageIsNotMax) {
         pageVal++;
         const { data } = await api('trending/movie/day', {
             params: {
                 page: pageVal
             }
         });
+
         const movies = data.results;
     
         movies.forEach(movie=> {
@@ -121,77 +117,86 @@ async function getPaginatedTrendingMovies() {
     }
 }
 
-async function getPaginatedCategoriesMovies() {
-    var { scrollTop, clientHeight, scrollHeight} = document.documentElement;
+// En esta funcion se realiza un closure que es una funcion que llama a otra funcion pero no se ejecuta de manera inmediata y se le pueden pasar parametros
+function getPaginatedCategoriesMovies(endpoint, section, idCat) {
+    return async function () {
+        const { scrollTop, clientHeight, scrollHeight} = document.documentElement;
 
-    var scrollBottomIs = (scrollTop + clientHeight) >= (scrollHeight - 15)
+        const scrollBottomIs = (scrollTop + clientHeight) >= (scrollHeight - 15)
 
-    console.log(scrollBottomIs);
-    if (scrollBottomIs) {
-        pageVal++;
-        const { data } = await api('discover/movie', {
-            params: {
-                page: pageVal
-            }
-        });
-        const movies = data.results;
-    
-        movies.forEach(movie=> {
-            const movieContainer = createFunction('div');
-            movieContainer.classList.add('movie-container');
-            movieContainer.addEventListener('click', () => {
-                location.hash = `#movie=${movie.id}`;
-            })
-    
-            const movieImg = createFunction('img');
-            movieImg.classList.add('movie-img');
-            movieImg.setAttribute('alt', movie.title);
-            movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
-            movieImg.addEventListener('error', ()=> {
-                movieImg.setAttribute('src', `https://as01.epimg.net/meristation/imagenes/2021/04/26/reportajes/1619438192_264857_1619438392_sumario_normal.jpg`);
+        if (scrollBottomIs) {
+            pageVal++;
+            const { data } = await api(endpoint, {
+                params: {
+                    page: pageVal,
+                    with_genres: idCat
+                }
             });
-            
-            movieContainer.appendChild(movieImg);
-            genericSection.appendChild(movieContainer);
-            lazyLoader.observe(movieImg);
-        })
+            console.log({data});
+            const movies = data.results;
+        
+            movies.forEach(movie=> {
+                const movieContainer = createFunction('div');
+                movieContainer.classList.add('movie-container');
+                movieContainer.addEventListener('click', () => {
+                    location.hash = `#movie=${movie.id}`;
+                })
+        
+                const movieImg = createFunction('img');
+                movieImg.classList.add('movie-img');
+                movieImg.setAttribute('alt', movie.title);
+                movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+                movieImg.addEventListener('error', ()=> {
+                    movieImg.setAttribute('src', `https://as01.epimg.net/meristation/imagenes/2021/04/26/reportajes/1619438192_264857_1619438392_sumario_normal.jpg`);
+                });
+                
+                movieContainer.appendChild(movieImg);
+                section.appendChild(movieContainer);
+                lazyLoader.observe(movieImg);
+            })
+        }
     }
 }
 
-async function getPaginatedSearchingMovies() {
-    var { scrollTop, clientHeight, scrollHeight} = document.documentElement;
+function getPaginatedSearchingMovies(endpoint, section, decodedQuery) {
+    return async function () {
+        var { scrollTop, clientHeight, scrollHeight} = document.documentElement;
 
-    var scrollBottomIs = (scrollTop + clientHeight) >= (scrollHeight - 15)
-
-    console.log(scrollBottomIs);
-    if (scrollBottomIs) {
-        pageVal++;
-        const { data } = await api('search/movie', {
-            params: {
-                page: pageVal
-            }
-        });
-        const movies = data.results;
-    
-        movies.forEach(movie=> {
-            const movieContainer = createFunction('div');
-            movieContainer.classList.add('movie-container');
-            movieContainer.addEventListener('click', () => {
-                location.hash = `#movie=${movie.id}`;
-            })
-    
-            const movieImg = createFunction('img');
-            movieImg.classList.add('movie-img');
-            movieImg.setAttribute('alt', movie.title);
-            movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
-            movieImg.addEventListener('error', ()=> {
-                movieImg.setAttribute('src', `https://as01.epimg.net/meristation/imagenes/2021/04/26/reportajes/1619438192_264857_1619438392_sumario_normal.jpg`);
+        var scrollBottomIs = (scrollTop + clientHeight) >= (scrollHeight - 15)
+ 
+        if (scrollBottomIs) {
+            pageVal++;
+            const { data } = await api(endpoint, {
+                params: {
+                    page: pageVal,
+                    query: decodedQuery
+                }
             });
-            
-            movieContainer.appendChild(movieImg);
-            genericSection.appendChild(movieContainer);
-            lazyLoader.observe(movieImg);
-        })
+
+            console.log({data});
+
+            const movies = data.results;
+        
+            movies.forEach(movie=> {
+                const movieContainer = createFunction('div');
+                movieContainer.classList.add('movie-container');
+                movieContainer.addEventListener('click', () => {
+                    location.hash = `#movie=${movie.id}`;
+                })
+        
+                const movieImg = createFunction('img');
+                movieImg.classList.add('movie-img');
+                movieImg.setAttribute('alt', movie.title);
+                movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+                movieImg.addEventListener('error', ()=> {
+                    movieImg.setAttribute('src', `https://as01.epimg.net/meristation/imagenes/2021/04/26/reportajes/1619438192_264857_1619438392_sumario_normal.jpg`);
+                });
+                
+                movieContainer.appendChild(movieImg);
+                section.appendChild(movieContainer);
+                lazyLoader.observe(movieImg);
+            })
+        }
     }
 }
 
@@ -200,10 +205,8 @@ async function getCategoriesPreview() {
 
     const categories = data.genres;
     console.log('Categories');
-    console.log( {data, categories});
-    
-    //categoriesPreviewList.innerHTML = "";
-    
+    //console.log( {data, categories});
+        
     createCategories(categories, categoriesPreviewList);
 }
 
