@@ -6,7 +6,7 @@
 }) */
 
 const api = axios.create({
-    baseURL: 'http://api.themoviedb.org/3/',
+    baseURL: 'https://api.themoviedb.org/3/',
     headers: {
         'Content-Type': 'application/json;charset=utf-8'
     },
