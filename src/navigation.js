@@ -1,7 +1,6 @@
 let maxPages;
 let pageVal = 1;
 let infiniteScroll;
-
 searchForm.addEventListener('submit', (e) => e.preventDefault());
 
 headerTitle.addEventListener('click',  () => location.hash='#home');
@@ -51,6 +50,7 @@ function navigator() {
 
 const homePage = () => {
     console.log('Home');
+    /* console.log(lang); */
 
     headerSection.classList.remove('header-container--long');
     headerSection.style.background = '';
@@ -61,6 +61,7 @@ const homePage = () => {
     searchForm.classList.remove('inactive');
 
     trendingPreviewSection.classList.remove('inactive');
+    likedMoviesSection.classList.remove('inactive');
     categoriesPreviewSection.classList.remove('inactive');
     genericSection.classList.add('inactive');
     genericSection.innerHTML = "";
@@ -68,6 +69,7 @@ const homePage = () => {
 
     getMovies('trending/movie/day', trendingMoviesPreviewList);
     getCategoriesPreview();
+    getLikedMovies();
 }
 
 const categoriesPage = () => {
@@ -82,6 +84,7 @@ const categoriesPage = () => {
     searchForm.classList.add('inactive');
 
     trendingPreviewSection.classList.add('inactive');
+    likedMoviesSection.classList.add('inactive');
     categoriesPreviewSection.classList.add('inactive');
     genericSection.classList.remove('inactive');
     movieDetailSection.classList.add('inactive');
@@ -112,6 +115,7 @@ const movieDetailPage = () => {
     searchForm.classList.add('inactive');
 
     trendingPreviewSection.classList.add('inactive');
+    likedMoviesSection.classList.add('inactive');
     categoriesPreviewSection.classList.add('inactive');
     genericSection.classList.add('inactive');
     movieDetailSection.classList.remove('inactive');
@@ -123,7 +127,7 @@ const movieDetailPage = () => {
 
 const searchPage = () => {
     console.log('Search');
-
+    
     headerSection.classList.remove('header-container--long');
     headerSection.style.background = '';
     arrowBtn.classList.remove('inactive');
@@ -133,6 +137,7 @@ const searchPage = () => {
     searchForm.classList.remove('inactive');
 
     trendingPreviewSection.classList.add('inactive');
+    likedMoviesSection.classList.add('inactive');
     categoriesPreviewSection.classList.add('inactive');
     genericSection.classList.remove('inactive');
     movieDetailSection.classList.add('inactive');
@@ -158,6 +163,7 @@ const trendPage = () => {
     searchForm.classList.add('inactive');
 
     trendingPreviewSection.classList.add('inactive');
+    likedMoviesSection.classList.add('inactive');
     categoriesPreviewSection.classList.add('inactive');
     genericSection.classList.remove('inactive');
     movieDetailSection.classList.add('inactive');

@@ -1,3 +1,10 @@
+// Data
+//let lang = language.value || 'es';
+
+/* language.addEventListener('click', () => {
+    lang = language.value;
+}) */
+
 const api = axios.create({
     baseURL: 'http://api.themoviedb.org/3/',
     headers: {
@@ -8,6 +15,25 @@ const api = axios.create({
         'language': 'es'
     }
 });
+
+function likedMovieList() {
+    const likedMovies = JSON.parse(localStorage.getItem('liked_movies')) || {};
+
+    return likedMovies;
+}
+
+function likeMovie(movie){
+    const likedMovies = likedMovieList();
+    console.log(likedMovies);
+    if (likedMovies[movie.id]) {
+        likedMovies[movie.id] = undefined;
+    } else {
+        likedMovies[movie.id] = movie;
+    }
+
+
+    localStorage.setItem('liked_movies', JSON.stringify(likedMovies));
+}
 
 // Utils
 
@@ -31,10 +57,10 @@ async function getMovies(endpoint, section, id, searchQuery){
             query: searchQuery
         }
     });
+    
     maxPages = data.total_pages;
     const movies = data.results;
     section.innerHTML = "";
-
     movies.forEach(movie=> {
         const movieContainer = createFunction('div');
         movieContainer.classList.add('movie-container');
@@ -52,10 +78,12 @@ async function getMovies(endpoint, section, id, searchQuery){
         
         const movieBtn = createFunction('button');
         movieBtn.classList.add('movie-btn');
+        likedMovieList()[movie.id] && movieBtn.classList.add('movie-btn--liked');
         movieBtn.addEventListener('click', ()=> {
             movieBtn.classList.toggle('movie-btn--liked');
-            //AGREGAR PELICULA A LOCAL STORAGE
-        })
+            likeMovie(movie);
+            getLikedMovies()
+        });
 
         movieContainer.appendChild(movieImg);
         movieContainer.appendChild(movieBtn);
@@ -106,19 +134,28 @@ async function getPaginatedTrendingMovies() {
         movies.forEach(movie=> {
             const movieContainer = createFunction('div');
             movieContainer.classList.add('movie-container');
-            movieContainer.addEventListener('click', () => {
-                location.hash = `#movie=${movie.id}`;
-            })
     
             const movieImg = createFunction('img');
             movieImg.classList.add('movie-img');
             movieImg.setAttribute('alt', movie.title);
             movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+            movieImg.addEventListener('click', () => {
+                location.hash = `#movie=${movie.id}`;
+            })
             movieImg.addEventListener('error', ()=> {
                 movieImg.setAttribute('src', `https://as01.epimg.net/meristation/imagenes/2021/04/26/reportajes/1619438192_264857_1619438392_sumario_normal.jpg`);
             });
             
+            const movieBtn = createFunction('button');
+            movieBtn.classList.add('movie-btn');
+            likedMovieList()[movie.id] && movieBtn.classList.add('movie-btn--liked');
+            movieBtn.addEventListener('click', ()=> {
+                movieBtn.classList.toggle('movie-btn--liked');
+                likeMovie(movie);
+            })
+
             movieContainer.appendChild(movieImg);
+            movieContainer.appendChild(movieBtn);
             genericSection.appendChild(movieContainer);
             lazyLoader.observe(movieImg);
         })
@@ -146,19 +183,28 @@ function getPaginatedCategoriesMovies(endpoint, section, idCat) {
             movies.forEach(movie=> {
                 const movieContainer = createFunction('div');
                 movieContainer.classList.add('movie-container');
-                movieContainer.addEventListener('click', () => {
-                    location.hash = `#movie=${movie.id}`;
-                })
-        
+
                 const movieImg = createFunction('img');
                 movieImg.classList.add('movie-img');
                 movieImg.setAttribute('alt', movie.title);
                 movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+                movieImg.addEventListener('click', () => {
+                    location.hash = `#movie=${movie.id}`;
+                })
                 movieImg.addEventListener('error', ()=> {
                     movieImg.setAttribute('src', `https://as01.epimg.net/meristation/imagenes/2021/04/26/reportajes/1619438192_264857_1619438392_sumario_normal.jpg`);
                 });
+
+                const movieBtn = createFunction('button');
+                movieBtn.classList.add('movie-btn');
+                likedMovieList()[movie.id] && movieBtn.classList.add('movie-btn--liked');
+                movieBtn.addEventListener('click', ()=> {
+                    movieBtn.classList.toggle('movie-btn--liked');
+                    likeMovie(movie);
+                })
                 
                 movieContainer.appendChild(movieImg);
+                movieContainer.appendChild(movieBtn);
                 section.appendChild(movieContainer);
                 lazyLoader.observe(movieImg);
             })
@@ -170,8 +216,7 @@ function getPaginatedSearchingMovies(endpoint, section, decodedQuery) {
     return async function () {
         var { scrollTop, clientHeight, scrollHeight} = document.documentElement;
 
-        var scrollBottomIs = (scrollTop + clientHeight) >= (scrollHeight - 15)
- 
+        var scrollBottomIs = (scrollTop + clientHeight) >= (scrollHeight - 10)
         if (scrollBottomIs) {
             pageVal++;
             const { data } = await api(endpoint, {
@@ -188,19 +233,28 @@ function getPaginatedSearchingMovies(endpoint, section, decodedQuery) {
             movies.forEach(movie=> {
                 const movieContainer = createFunction('div');
                 movieContainer.classList.add('movie-container');
-                movieContainer.addEventListener('click', () => {
-                    location.hash = `#movie=${movie.id}`;
-                })
         
                 const movieImg = createFunction('img');
                 movieImg.classList.add('movie-img');
                 movieImg.setAttribute('alt', movie.title);
                 movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+                movieImg.addEventListener('click', () => {
+                    location.hash = `#movie=${movie.id}`;
+                })
                 movieImg.addEventListener('error', ()=> {
                     movieImg.setAttribute('src', `https://as01.epimg.net/meristation/imagenes/2021/04/26/reportajes/1619438192_264857_1619438392_sumario_normal.jpg`);
                 });
+
+                const movieBtn = createFunction('button');
+                movieBtn.classList.add('movie-btn');
+                likedMovieList()[movie.id] && movieBtn.classList.add('movie-btn--liked');
+                movieBtn.addEventListener('click', ()=> {
+                    movieBtn.classList.toggle('movie-btn--liked');
+                    likeMovie(movie);
+                });
                 
                 movieContainer.appendChild(movieImg);
+                movieContainer.appendChild(movieBtn);
                 section.appendChild(movieContainer);
                 lazyLoader.observe(movieImg);
             })
@@ -212,8 +266,6 @@ async function getCategoriesPreview() {
     const { data } = await api('genre/movie/list');
 
     const categories = data.genres;
-    console.log('Categories');
-    //console.log( {data, categories});
         
     createCategories(categories, categoriesPreviewList);
 }
@@ -263,4 +315,45 @@ async function getRelatedMoviesId(id) {
         relatedMoviesCategoriesList.scrollTo(0,0);
         lazyLoader.observe(movieImg);
     })
+}
+
+function getLikedMovies(){
+    const likedMovies = likedMovieList();
+    const moviesArray = Object.values(likedMovies);
+
+    likedMovieListContainer.innerHTML = "";
+    moviesArray.forEach(movie=> {
+        const movieContainer = createFunction('div');
+        movieContainer.classList.add('movie-container');
+
+
+        const movieImg = createFunction('img');
+        movieImg.classList.add('movie-img');
+        movieImg.setAttribute('alt', movie.title);
+        movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+        movieImg.addEventListener('click', () => {
+            location.hash = `#movie=${movie.id}`;
+        })
+        movieImg.addEventListener('error', ()=> {
+            movieImg.setAttribute('src', `https://as01.epimg.net/meristation/imagenes/2021/04/26/reportajes/1619438192_264857_1619438392_sumario_normal.jpg`);
+        });
+        
+        const movieBtn = createFunction('button');
+        movieBtn.classList.add('movie-btn');
+        likedMovieList()[movie.id] && movieBtn.classList.add('movie-btn--liked');
+        movieBtn.addEventListener('click', ()=> {
+            movieBtn.classList.toggle('movie-btn--liked');
+            likeMovie(movie);
+            getLikedMovies()
+        })
+
+
+        movieContainer.appendChild(movieImg);
+        movieContainer.appendChild(movieBtn);
+        likedMovieListContainer.appendChild(movieContainer);
+        lazyLoader.observe(movieImg);
+    });
+
+
+    console.log(likedMovies, moviesArray);
 }
